@@ -1,0 +1,27 @@
+<% include ../partials/header %>
+
+<h1>Хэрэглэгчийн Цэс</h1>
+
+<form action="/users/show" method="POST">
+  <label for="image">Профайл зураг</label><br>
+  <input type="text" name="lastname" value="<%= user.lastname %>"><br>
+  <input type="text" name="firstname" value="<%= user.firstname %>"><br>
+  <input type="number" name="birthday" value="<%= user.birthday %>"><br>
+  <input type="number" name="phoneNumber" value="<%= user.phoneNumber %>"><br>
+  <input type="text" name="address" value="<%= user.address %>"><br>
+  <input type="text" name="created date" value="<%= user.createdAt %>"><br>
+  <input type="text" name="email" value="<%= user.email %>"><br>
+  <button>Submit</button>
+</form>
+
+<li><a href="/secret">Буцах</a></li>
+<li><a href="/users/photo">Профайл</a></li>
+<li><a href="/users/reset">Нууц үг солих</a></li>
+<li><a href="/users/deleteAccount">Хэрэглэгчийн бүртгэл устгах</a></li>
+<li><a href="/logout">Гарах</a></li>
+
+<p>I got you, Anya</p>
+<img src="https://external-preview.redd.it/Z-CRi75l3T356PlPoitnIaMnP7ZVSphTgLfxE2szyXM.png?auto=webp&s=7eb34beffca742268a1dc95a6f9b431ee4ddb62a" alt="">
+
+
+<% include ../partials/footer %>

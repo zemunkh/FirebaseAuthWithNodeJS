@@ -1,0 +1,17 @@
+<% include ../partials/header %>
+
+<h1>Та хэрэглэгчийн мэдээллээ устгах гэж байна.</h1>
+
+<p>Баталгаажуулвал илүү гоё юм харахдаа амны алчуураа бэлд</p>
+
+<form action="/users/deleteAccount" method="POST">
+  <input type="password" name="password" placeholder="Нууц үг">
+  <button>Устгах</button>
+</form>
+
+<li><a href="/logout">Гарах</a></li>
+
+<img src="https://i.imgur.com/XbE6QvW.jpg" alt="">
+
+
+<% include ../partials/footer %>

@@ -1,6 +1,15 @@
+<% include ./partials/header %>
+
 <h1>Sign Up Form</h1>
 
 <form action="/register" method="POST">
+  <input type="text" name="lastname" placeholder="Овог">
+  <input type="text" name="firstname" placeholder="Нэр">
+  <input type="number" name="birthday" placeholder="Төрсөн он">
+  <input type="number" name="gender" placeholder="Хүйс [1:0]">
+  <input type="number" name="phoneNumber" placeholder="Утас">
+  <input type="text" name="address" placeholder="Хаяг">
+
   <input type="text" name="email" placeholder="email">
   <input type="password" name="password" placeholder="password">
   <button>Submit</button>
@@ -9,3 +18,5 @@
 <li><a href="/register">Бүртгүүлэх</a></li>
 <li><a href="/login">Нэвтрэх</a></li>
 <li><a href="/logout">Гарах</a></li>
+
+<% include ./partials/footer %>
