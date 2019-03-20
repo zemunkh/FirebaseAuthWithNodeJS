@@ -15,6 +15,7 @@ router.get("/", middleware.isLoggedIn, function(req, res){
 
   var userRef = db.collection("users").doc(user.uid);
   var getDoc  = userRef.get().then(function(doc){
+    console.log("Doc before: ", doc.data());
     if(!doc.exists){
       console.log("No such document");
       return res.redirect("/secret");
@@ -26,6 +27,9 @@ router.get("/", middleware.isLoggedIn, function(req, res){
     console.log("Error getting documents **", err);
   });
 });
+
+// email verify. Use it below
+//firebase.auth().currentUser.sendEmailVerification().then(function(){
 
 // User profile update
 router.post("/show", function(req, res){
@@ -70,23 +74,25 @@ router.get("/photo", middleware.isLoggedIn, function(req, res){
       console.log("No such document");
       return res.redirect("/secret");
     } else {
-      var image = doc.data().imageURL;
-      console.log("imageURL: ", image);
-      res.render("users/photo", {imageURL: image});
+      var imageURL = doc.data().imageURL;
+      console.log("imageURL: ", imageURL);
+      res.render("users/photo", {imageURL: imageURL});
     }
   }).catch(function(err){
     console.log("Error getting documents **", err);
   });
 });
 
-
+// photo conversion and upload for temp file
 router.post("/photo", middleware.isLoggedIn, function(req, res){
-
   // Upload and reload the uploaded image
   // Save it to user's database section
 
-  // Upload to server
+  // Disable button in front-end when file is unavailable.
   var image = imageUploader.uploadProfileImage(req, res);
+
+  // Upload to server
+
   // get link of that uploaded images
 
   // with user's permission, its url will set to user data.
@@ -98,14 +104,17 @@ router.post("/upload", middleware.isLoggedIn, function(req, res){
   var user = firebase.auth().currentUser;
   var userRef = db.collection('users').doc(user.uid);
 
-  var imageURL = req.body.email;
-  console.log("That URL: ", imageURL);
+  var imURL = req.body.imageURL;
+  // it should get the last value that user gave it to server.
+  // then append to ImageURL array as first element or last element
+  console.log("That URL: ", imURL);
 
-  if(imageURL != null) {
+  if(imURL != null) {
     userRef.update({
-      "imageURL": imageURL
+      // Array value will be added to next field value.
+      "imageURL": admin.firestore.FieldValue.arrayUnion(imURL)
     }).then(function(){
-      res.redirect("/secret");
+      res.redirect("/users");
       console.log("imageURL is successfully updated!");
     }).catch(function(err){
       console.log("Error during Update: ", err);
@@ -123,7 +132,6 @@ router.get("/reset", middleware.isVerifiedAuth, function(req, res){
 });
 
 router.post("/reset", function(req, res){
-
   var oldPassword  = req.body.oldPassword;
   var newPassword1 = req.body.newPassword1;
   var newPassword2 = req.body.newPassword2;
