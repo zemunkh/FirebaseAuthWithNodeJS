@@ -4,6 +4,9 @@ var fs     = require("fs");
 const sharp = require("sharp");
 var Promise = require("promise");
 
+var firebase = require("firebase");
+var admin    = require("firebase-admin");
+
 var bucketName = "authdemo-f7863.appspot.com";
 
 var uploaderObj = {};
@@ -107,8 +110,9 @@ async function uploadPic(bucketName, filename) {
 
 uploaderObj.uploadProfileImage = function(req, res){
   upload(req, res, function(err){
-      if(err || req.file == undefined){
-        res.render("/");
+      if(err || req.file === null){
+        console.log("Strange here!\n\n");
+        res.redirect("/users");
       } else {
         var filename = `${req.file.filename}`;
         console.log("Image Path: " + filename);
@@ -125,13 +129,16 @@ uploaderObj.uploadProfileImage = function(req, res){
                 uploadPromise.then(function(file){
                   console.log("Upload is resolved");
                   if(file != null){
-                    var imageURL = `https://storage.cloud.google.com/${bucketName}/${'profile/' + filename}`;
-                    console.log(imageURL);
+                    var imURL = `https://storage.cloud.google.com/${bucketName}/${'profile/' + filename}`;
+                    console.log(imURL);
                     // res.render("show", {path: imageURL});
                     // add image path.
                     // If profile img is available, load image, Else, if not, load avatar as default
-                    res.render("users/photo", {imageURL: imageURL});
-                    return imageURL;
+                    console.log("prevArray: ", req.body.imageArray);
+
+                    // ===== Stuck in here ======//
+                    res.render("users/photo", {imageURL: imURL});
+                    return imURL;
                   } else {
                     console.log("Upload process is not ok! ");
                     res.redirect("/secret");
