@@ -2,6 +2,17 @@
 
 <h1>Хэрэглэгчийн Цэс</h1>
 
+<% if(typeof user.imageURL[0] != undefined) {%>
+  <label for="">photo</label>
+  <% for(let i = 0; i < user.imageURL.length; i++) { %>
+    <img src=" <%= user.imageURL[i] %> " alt="User Profile Image">
+  <% } %>
+<% } else { %>
+  <label for="">avatar</label>
+  <img src="https://storage.cloud.google.com/authdemo-f7863.appspot.com/profile/astronaut.png" alt="User Profile Image Not Available">
+<% } %>
+
+
 <form action="/users/show" method="POST">
   <label for="image">Профайл зураг</label><br>
   <input type="text" name="lastname" value="<%= user.lastname %>"><br>
