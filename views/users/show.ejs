@@ -2,13 +2,9 @@
 
 <h1>Хэрэглэгчийн Цэс</h1>
 
-<% if(typeof user.imageURL[0] != undefined) {%>
-  <label for="">photo</label>
-  <% for(let i = 0; i < user.imageURL.length; i++) { %>
-    <img src=" <%= user.imageURL[i] %> " alt="User Profile Image">
-  <% } %>
+<% if(typeof user.imageURL != undefined && (user.imageURL).length > 0) {%>
+  <img src=" <%= user.imageURL[0] %> " alt="User Profile Image">
 <% } else { %>
-  <label for="">avatar</label>
   <img src="https://storage.cloud.google.com/authdemo-f7863.appspot.com/profile/astronaut.png" alt="User Profile Image Not Available">
 <% } %>
 
@@ -20,10 +16,11 @@
   <input type="number" name="birthday" value="<%= user.birthday %>"><br>
   <input type="number" name="phoneNumber" value="<%= user.phoneNumber %>"><br>
   <input type="text" name="address" value="<%= user.address %>"><br>
-  <input type="text" name="created date" value="<%= user.createdAt %>"><br>
   <input type="text" name="email" value="<%= user.email %>"><br>
-  <button>Submit</button>
+  <button>Submit</button><br>
 </form>
+
+<h4>Бүртгүүлсэн огноо: <%= createdDate %></h4>
 
 <li><a href="/secret">Буцах</a></li>
 <li><a href="/users/photo">Профайл</a></li>

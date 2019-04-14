@@ -1,22 +1,60 @@
-<h1>Upload/Change Profile Image!</h1>
+<% include ../partials/header %>
 
-<form class="uploadImage" action="/users/photo" method="POST" enctype="multipart/form-data">
-  <label for="image">Зураг</label><br>
-  <input type="file" id="image" name="image" accept="image/*" /><br>
-  <input type="submit" name="submit" value="Submit">
-</form>
 
-  <% if(typeof imageURL != undefined) {%>
-    <% for(let i = 0; i < imageURL.length; i++) { %>
-      <img src=" <%= imageURL[i] %> " alt="User Photos">
-    <% } %>
-  <% } else { %>
-    <label for="">avatar</label>
-    <img src="https://storage.cloud.google.com/authdemo-f7863.appspot.com/profile/astronaut.png" alt="User Profile Image Not Available">
-  <% } %>
+<div class="container">
+    <div class="row" style="display:flex; flex-wrap: wrap;">
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div id="album" class="row"></div>
+          <% if(typeof imageURL != "undefined") {%>
+            <% for(let i = 0; i < imageURL.length; i++) { %>
+              <div id="status" class="row"></div>
 
-<form action="/users/upload" method="POST">
-  <input type="text" name="imageURL" value="<%= imageURL %>"><br>
-  <label for="image">Хадгалах</label><br>
-  <button type="submit">Хадгал</button>
-</form>
+              <div class="card">
+                <img src=" <%= imageURL[i] %> " alt="User Photo">
+              </div>
+              <form id="delete-form" action="/users/photo/delete" method="POST">
+                <input type="hidden" name="selectedImage" value="<%= imageURL[i] %>">
+                <button>Устгах</button>
+              </form>
+              <form id="select-form" action="/users/photo/select" method="POST">
+                <input type="hidden" name="index" value="<%= i %>">
+                <input type="hidden" name="profileImage" value="<%= imageURL[i] %>">
+                <button>Сонгох</button>
+              </form>
+            <% } %>
+          <% } else { %>
+            <label for="">avatar</label>
+            <img src="https://storage.cloud.google.com/authdemo-f7863.appspot.com/profile/astronaut.png" alt="User Profile Image Not Available">
+          <% } %>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Photos upload Form -->
+            <form id="upload-photo" method="post" action="/users/upload_photo" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="photos-input">Зураг оруулах</label>
+                    <input id="photos-input" type="file" name="image" multiple="multiple" >
+                    <p class="help-block">Зөвхөн ганц зураг оруулна уу.</p>
+                </div>
+            </form>
+
+            <br/>
+            <!-- Progress Bar -->
+            <div class="progress">
+              <progress class="progress-bar" value="0" max="100">0%</progress>
+            </div>
+            <form class="saveImage" action="/users/set_profile" method="POST">
+              <input id="setProfile" class="btn btn-default" type="submit" name="profile" value="Save as Profile" />
+            </form>
+
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+
+
+
+</div>
+
+
+
+<% include ../partials/footer %>
