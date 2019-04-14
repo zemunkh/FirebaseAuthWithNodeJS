@@ -24,8 +24,11 @@ router.get("/", middleware.isLoggedIn, function(req, res){
         console.log("Yes I am empty!");
       }
       var time = (doc.data()).createdAt;
-      console.log("Timestamp: ", new Date(time.seconds).getTime());
-      res.render("users/show", {user: doc.data()});
+      var theDate = new Date(time.seconds * 1000);
+      var dateString = theDate.toLocaleDateString();
+      console.log("DateString: ", dateString);
+
+      res.render("users/show", {user: doc.data(), createdDate: dateString});
     }
   }).catch(function(err){
     console.log("Error getting documents **", err);
@@ -105,25 +108,31 @@ router.post("/set_profile", middleware.isLoggedIn, function(req, res){
   var userRef = db.collection('users').doc(user.uid);
 
   var imURL = `https://storage.cloud.google.com/authdemo-f7863.appspot.com/profile/${req.body.field}`;
+  var filename = req.body.field;
   // it should get the last value that user gave it to server.
   // then append to ImageURL array as first element or last element
   console.log("That URL: ", imURL);
 
   if(imURL != null) {
-    userRef.update({
-      // Array value will be added to next field value.
-      "imageURL": admin.firestore.FieldValue.arrayUnion(imURL)
-    }).then(function(){
-      // res.redirect("/users/photo");
-      res.send({'images': imURL});
-      console.log("imageURL is successfully updated!");
-    }).catch(function(err){
-      console.log("Error during Update: ", err);
+    userRef.get(getOptions).then(function(doc) {
+        console.log("Cached document data:", doc.data());
+        var imageArray = doc.data().imageURL;
+        imageArray.unshift(imURL);
+        console.log("New array: ", imageArray);
+        // Need to be nested
+        userRef.update({
+          // Array value will be added to next field value.
+          "imageURL": imageArray
+        }).then(function(){
+          res.send({'images': filename});
+          console.log("imageURL is successfully updated!");
+        }).catch(function(err){
+          console.log("Error during Update: ", err);
+        });
+    }).catch(function(error) {
+        console.log("Error getting cached document:", error);
     });
-  } else {
-    console.log("Error while retrieving imageURL!");
   }
-
 });
 
 var getOptions = {
@@ -209,7 +218,7 @@ router.post("/photo/delete", middleware.isLoggedIn, function(req, res){
       // Array value will be added to next field value.
       "imageURL": admin.firestore.FieldValue.arrayRemove(selectedImage)
     }).then(function(){
-      res.redirect("/users");
+      res.redirect("/users/photo");
       console.log("selectedImage is successfully deleted!");
     }).catch(function(err){
       console.log("Error during Update: ", err);
